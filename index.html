@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello World</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<script src = "/socket.io/socket.io.js"></script>
+   <script>
+      var socket = io("http://localhost:3000");
+      function setUsername() {
+         socket.emit('setUsername', document.getElementById('name').value);
+      };
+      var user;
+      socket.on('userExists', function(data) {
+         alert(data)
+      });
+      socket.on('userSet', function(data) {
+         user = data.username;
+         document.body.innerHTML = '<div class="msg-container"><input type = "text" id = "message">\
+         <button class="sendmsg" type = "button" name = "button" onclick = "sendMessage()">Send</button>\
+         <div id = "message-container"></div></div>';
+         console.log("Its Working");
+      });
+      function sendMessage() {
+         var msg = document.getElementById('message').value;
+         if(msg) {
+            socket.emit('msg', {message: msg, user: user});
+            document.getElementById('message').value=""
+         }
+      }
+      socket.on('newmessage', function(data) {
+         if(user) {
+            document.getElementById('message-container').innerHTML += '<div><b>' + 
+               data.user + '</b>: ' + data.message + '</div>'
+         }
+      })
+   </script>
+   <style>
+   @import url('https://fonts.googleapis.com/css2?family=Encode+Sans+SC:wght@300&family=Poppins:wght@300&display=swap');
+      *{
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+      body{
+         font-family: 'Poppins', sans-serif;
+         background-color: black;
+      }
+      .container{
+         display: block;
+         margin-top: 22vh;
+         background-color: rgb(255, 255, 255);
+         margin-left: 32vw;
+         width: 35vw;
+         border-radius: 20px;
+         height: 52vh;
+         justify-content: center;
+      }
+      .login_input{
+         padding: 10px 10px;
+         width: 20vw;
+         border-radius: 20px;
+         outline: none;
+         border: none;
+         font-size: 20px;
+         margin-top: 11%;
+         margin-left: 19%;
+         background-color: black;
+         font-family: 'Poppins', sans-serif;
+         text-align: center;    
+         color: aliceblue;     
+      }
+      ::placeholder { 
+         color: white;
+      }
+      .container h1{
+         margin-left: 12%;
+         font-size: 40px;
+
+      }
+      .login_button{
+         padding: 10px 10px;
+         border-radius: 10px;
+         margin-top: 50px;
+         color: black;
+         background-color: blanchedalmond;
+         font-weight: 200;
+         outline: none;
+         border: none;
+         font-size: 20px;
+         font-family: 'Poppins', sans-serif;
+         margin-left: 35%;
+         cursor: pointer;
+         transition: 0.5s;
+      }
+      .login_button:hover{
+         color: white;
+         background-color: black;
+      }
+      .msg-container{
+         background-color: rgb(255, 255, 255);
+      }
+      </style>
+<body>
+   <div class="container">
+    <div id="error-container"></div>
+    <br>
+    <h1>Welcome To HellChat!</h1>
+    <input class="login_input" type="text" name="name" id="name" value="" placeholder="Enter Your Name!">
+    <br>
+    <button class="login_button" type="button" name="button" onclick="setUsername()">Let me Chat!</button>
+   </div>
+</body>
+</html>
