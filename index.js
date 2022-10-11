@@ -13,7 +13,7 @@ io.on('connection', function(socket){
     socket.on('setUsername',function(data){
         console.log(data);
 
-        if(users.indexOf(data)> -1){
+        if(users.indexOf(datas)> -1){
             socket.emit('userExists',data + ' username is taken! Try using other username')
         }
         else{
